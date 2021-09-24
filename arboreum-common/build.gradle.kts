@@ -1,5 +1,6 @@
 plugins {
     kotlin("multiplatform")
+    id("maven-publish")
 }
 
 group = "ca.tradejmark.arboreum"
@@ -9,11 +10,21 @@ repositories {
     mavenCentral()
 }
 
-kotlin {
-    /* Targets configuration omitted. 
-    *  To find out how to configure the targets, please follow the link:
-    *  https://kotlinlang.org/docs/reference/building-mpp-with-gradle.html#setting-up-targets */
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/tradeJmark/arboreum-kotlin")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}
 
+
+kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
