@@ -1,10 +1,11 @@
 plugins {
     kotlin("multiplatform")
     id("maven-publish")
+    kotlin("plugin.serialization") version "1.5.31"
 }
 
 group = "ca.tradejmark.arboreum"
-version = "0.0.1"
+version = "0.0.2"
 
 repositories {
     mavenCentral()
@@ -23,12 +24,12 @@ publishing {
     }
 }
 
-
 kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-common"))
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0-RC")
             }
         }
         val commonTest by getting {
@@ -39,6 +40,17 @@ kotlin {
         }
 
         jvm()
+        val jvmTest by getting {
+            dependencies{
+                val jUnitVersion = "5.8.1"
+                implementation("org.junit.jupiter:junit-jupiter-api:$jUnitVersion")
+                runtimeOnly("org.junit.jupiter:junit-jupiter-engine:$jUnitVersion")
+            }
+        }
         js().browser()
     }
+}
+
+tasks.withType(Test::class).getByName("jvmTest") {
+    useJUnitPlatform()
 }
